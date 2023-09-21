@@ -30,5 +30,8 @@ For more information on various cloud-init data that can be provided to the `/op
 
 ### SLURM Team Edition
 
-This template launches a gateway, infrastructure and 5 compute nodes. They are automatically configured with IPA for multi-user access management and shared storage of 100GB.
+This template launches a gateway, infrastructure and 5 compute nodes. They are automatically configured with IPA for multi-user access management and shared storage of 100GB shared over the configured NFS directories.
 
+### JupyterLab Jumpstart
+
+This template launches a gateway node that automatically configures a Jupyter Lab environment accessible through web suite on the external IP of the node. It comes with 100GB of local storage across the whole system. 
