@@ -1,0 +1,70 @@
+  NODENAMENODENUMBER-pri-port:
+    type: OS::Neutron::Port
+    properties:
+      name: { list_join: ['-', ['NODENAMENODENUMBER', 'pri', { get_param: clustername }]] }
+      network: { get_resource: cluster-network }
+      security_groups:
+        - { get_resource: cluster-sg }
+      fixed_ips:
+        - subnet: { get_resource: cluster-network-pri }
+          ip_address: 10.100.1.NODENUMBER
+
+  NODENAMENODENUMBER:
+    type: OS::Nova::Server
+    properties:
+      name: { list_join: ['.', [ 'NODENAMENODENUMBER', { get_param: clustername }, 'alces.network']] }
+      flavor: { get_param: node-flavour }
+      admin_user: flight
+      networks:
+          - port: { get_resource: NODENAMENODENUMBER-pri-port }
+      block_device_mapping_v2:
+        - volume_id: { get_resource: NODENAMENODENUMBER-vol }
+          boot_index: 0
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #cloud-config
+            fqdn: NODENAMENODENUMBER.$clustername.alces.network
+            users:
+              - default
+              - name: flight
+                sudo: ALL=(ALL) NOPASSWD:ALL
+                ssh-authorized-keys:
+                  - $key
+            write_files:
+              - content: |
+                  SERVER=$gateway-pri-ip
+                  PREFIX=node
+                path: /opt/flight/cloudinit.in
+                permissions: '0600'
+                owner: root:root
+              - content: |
+                  if [ -f /opt/flight/cloudinit.in ] ; then
+                      source /opt/flight/cloudinit.in
+                      if [ ! -z ${SERVER} ] ; then
+                          count=120
+                          until socat -u TCP:$SERVER:1234 STDOUT >> /root/.ssh/authorized_keys ; do
+                              sleep 1
+                              count=$((count - 1))
+                              if [[ $count == 0 ]] ; then
+                                  echo "Failed to receive SSH Public Key from $SERVER"
+                                  break
+                              fi
+                          done
+                      fi
+                  fi
+                path: /var/lib/firstrun/scripts/04_getpubkey.bash
+                permissions: '0600'
+                owner: root:root
+          params:
+            $key: { get_param: ssh-key }
+            $clustername: { get_param: clustername }
+            $gateway-pri-ip: { get_param: gateway-pri-ip }
+
+  NODENAMENODENUMBER-vol:
+    type: OS::Cinder::Volume
+    properties:
+      image: { get_param: solo-image }
+      size: 16
+

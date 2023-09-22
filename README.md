@@ -26,6 +26,10 @@ This snippet provides a server that automatically mounts a 100GB storage disk to
 
 For more information on various cloud-init data that can be provided to the `/opt/flight/cloudinit.in` see the [OpenFlight docs](https://www.openflighthpc.org/latest/docs/flight-solo/understand-solo/user-data/).
 
+### Compute Node
+
+This snippet provides a basic node template. It has NODENAME and NODEIP text which should be replaced (e.g. with `sed` replacing `NODENAME` with `node01` and `NODEIP` with `1` (because the IP can't end `.01`)) when added to a template. This makes it slightly easier to generate a bunch of similar compute nodes to be added to a template.
+
 ## Templates
 
 ### SLURM Team Edition
