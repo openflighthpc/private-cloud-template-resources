@@ -1,31 +1,31 @@
-  NODENAMENODENUMBER-pri-port:
+  NODENAME-pri-port:
     type: OS::Neutron::Port
     properties:
-      name: { list_join: ['-', ['NODENAMENODENUMBER', 'pri', { get_param: clustername }]] }
+      name: { list_join: ['-', ['NODENAME', 'pri', { get_param: clustername }]] }
       network: { get_resource: cluster-network }
       security_groups:
         - { get_resource: cluster-sg }
       fixed_ips:
         - subnet: { get_resource: cluster-network-pri }
-          ip_address: 10.100.1.NODENUMBER
+          ip_address: 10.100.1.NODEIP
 
-  NODENAMENODENUMBER:
+  NODENAME:
     type: OS::Nova::Server
     properties:
-      name: { list_join: ['.', [ 'NODENAMENODENUMBER', { get_param: clustername }, 'alces.network']] }
+      name: { list_join: ['.', [ 'NODENAME', { get_param: clustername }, 'alces.network']] }
       flavor: { get_param: node-flavour }
       admin_user: flight
       networks:
-          - port: { get_resource: NODENAMENODENUMBER-pri-port }
+          - port: { get_resource: NODENAME-pri-port }
       block_device_mapping_v2:
-        - volume_id: { get_resource: NODENAMENODENUMBER-vol }
+        - volume_id: { get_resource: NODENAME-vol }
           boot_index: 0
       user_data_format: RAW
       user_data:
         str_replace:
           template: |
             #cloud-config
-            fqdn: NODENAMENODENUMBER.$clustername.alces.network
+            fqdn: NODENAME.$clustername.alces.network
             users:
               - default
               - name: flight
@@ -62,7 +62,7 @@
             $clustername: { get_param: clustername }
             $gateway-pri-ip: { get_param: gateway-pri-ip }
 
-  NODENAMENODENUMBER-vol:
+  NODENAME-vol:
     type: OS::Cinder::Volume
     properties:
       image: { get_param: solo-image }
