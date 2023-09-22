@@ -35,3 +35,8 @@ This template launches a gateway, infrastructure and 5 compute nodes. They are a
 ### JupyterLab Jumpstart
 
 This template launches a gateway node that automatically configures a Jupyter Lab environment accessible through web suite on the external IP of the node. It comes with 100GB of local storage across the whole system. 
+
+### Container Cruncher Small 
+
+This template launches a gateway node and 2 compute nodes. The cluster runs a Kubernetes cluster configuration for the user `flight` with shared storage of 100GB shared over the configured NFS directories.
+
