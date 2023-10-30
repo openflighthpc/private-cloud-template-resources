@@ -20,6 +20,11 @@ parameters:
   gateway-flavour:
     type: string
     label: Gateway node flavour
+
+  storage-size:
+    type: number
+    label: Size of the shared storage disk for NFS
+    default: 1024
 resources:
   gateway-pri-port:
     type: OS::Neutron::Port
@@ -87,7 +92,7 @@ resources:
   gateway-vol-shared-storage:
     type: OS::Cinder::Volume
     properties:
-      size: 100
+      size: { get-param: storage-size }
 
   gateway-vol-shared-storage-attach:
     type: OS::Cinder::VolumeAttachment
