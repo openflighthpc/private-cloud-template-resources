@@ -40,7 +40,7 @@ parameters:
   storage-size:
     type: number
     label: Size of the shared storage disk for NFS
-    default: 1024
+    default: 100
 resources:
   external-route:
     type: OS::Neutron::Router
