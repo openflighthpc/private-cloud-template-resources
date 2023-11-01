@@ -44,3 +44,11 @@ This template launches a gateway node that automatically configures a Jupyter La
 
 This template launches a gateway node and 2 compute nodes. The cluster runs a Kubernetes cluster configuration for the user `flight` with shared storage of 100GB shared over the configured NFS directories.
 
+### Container Cruncher Medium
+
+This template launches a gateway node and 5 compute nodes. The cluster runs a Kubernetes cluster configuration for the user `flight` with shared storage of 500GB shared over the configured NFS directories.
+
+### Container Cruncher Large 
+
+This template launches a gateway node and 10 compute nodes. The cluster runs a Kubernetes cluster configuration for the user `flight` with shared storage of 1TB shared over the configured NFS directories.
+
