@@ -20,10 +20,6 @@ parameters:
     type: string
     label: SSH Key for Access
 
-  access-password:
-    type: string
-    label: Password used to access Flight Web Suite as the user "flight"
-
   solo-image:
     type: string
     label: Flight Solo Image ID
@@ -147,15 +143,23 @@ resources:
             write_files:
               - content: |
                   AUTOPARSEMATCH=$clustername
-                  PROFILE_ANSWERS='{ "cluster_type": "openflight-jupyter-standalone", "cluster_name": "$clustername", "default_password": "$access_password" }'
+                  PROFILE_ANSWERS='{ "cluster_type": "openflight-jupyter-standalone", "cluster_name": "$clustername" }'
                   AUTOAPPLY="gateway: all-in-one"
                 path: /opt/flight/cloudinit.in
+                permissions: '0600'
+                owner: root:root
+              - content: |
+                  # Generate password for flight user
+                  FLIGHTPASS=$(cat /dev/urandom |tr -dc _A-Z-a-z-0-9 |head -c 8)
+                  echo "$FLIGHTPASS" > /root/flight_user_pass.txt
+                  # Ensure Flight Profile uses generated passwords
+                  /opt/flight/bin/flight profile configure --answers "{ \"cluster_type\": \"openflight-jupyter-standalone\", \"default_password\": \"$FLIGHTPASS\"}" --accept-defaults
+                path: /var/lib/firstrun/scripts/00-generate-passwords.bash
                 permissions: '0600'
                 owner: root:root
           params:
             $key: { get_param: ssh-key }
             $clustername: { get_param: clustername }
-            $access_password: { get_param: access-password }
 
   gateway-vol:
     type: OS::Cinder::Volume
