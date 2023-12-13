@@ -52,3 +52,7 @@ This template launches a gateway node and 5 compute nodes. The cluster runs a Ku
 
 This template launches a gateway node and 10 compute nodes. The cluster runs a Kubernetes cluster configuration for the user `flight` with shared storage of 1TB shared over the configured NFS directories.
 
+### CFD Jumpstart
+
+This template launches a gateway node and 5 compute nodes. The cluster runs a SLURM environment and preinstalls OpenFOAM 22.12 and OpenMPI to provide a working CFD environment for job workflows and shared storage of 1TB over the configured NFS directories.
+
