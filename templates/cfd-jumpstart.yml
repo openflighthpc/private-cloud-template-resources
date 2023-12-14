@@ -103,16 +103,6 @@ resources:
           port_range_max: 5911
           protocol: tcp
           remote_ip_prefix: 0.0.0.0/0
-        - direction: ingress
-          port_range_min: 8888
-          port_range_max: 8888
-          protocol: tcp
-          remote_ip_prefix: 0.0.0.0/0
-        - direction: ingress
-          port_range_min: 8888
-          port_range_max: 8888
-          protocol: udp
-          remote_ip_prefix: 0.0.0.0/0
 
   gateway-pri-port:
     type: OS::Neutron::Port
@@ -181,11 +171,12 @@ resources:
                   # Wait for Login profile application to complete
                   until /opt/flight/bin/flight profile list |grep login |grep -q complete ; do
                     echo "Waiting for login identity to complete"
-                    sleep 5
+                    sleep 15
                   done
+                  # Ensure write access to NFS mounts for flight user
+                  chgrp flight /opt/{apps,data,service,site}
+                  chmod 775 /opt/{apps,data,service,site}
                   # Install OpenFOAM to /opt/apps
-                  chgrp flight /opt/apps
-                  chmod 775 /opt/apps
                   su - flight -c 'flight_SILO_software_dir=/opt/apps/ /opt/flight/bin/flight silo software pull OpenFOAM 22.12 --repo openflight'
                   # Install Paraview
                   dnf -y install paraview
@@ -259,7 +250,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -311,7 +301,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -363,7 +352,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -415,7 +403,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -467,7 +454,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
