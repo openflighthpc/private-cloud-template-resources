@@ -147,6 +147,7 @@ resources:
                   SHAREPUBKEY=true
                   AUTOPARSEMATCH=$clustername
                   PROFILE_ANSWERS='{ "cluster_type": "openflight-slurm-multinode", "cluster_name": "$clustername", "nfs_server": "gateway1", "slurm_server": "gateway1", "ipa_use": "true", "ipa_server": "infra01", "ipa_domain": "$clustername.alces.network" }'
+                  AUTOAPPLY="node: compute"
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -178,9 +179,7 @@ resources:
                     sleep 5
                   done
                   /opt/flight/bin/flight profile apply infra01 ipa --wait
-                  /opt/flight/bin/flight profile apply gateway1 login 
-                  COMPUTE_NODES="$(/opt/flight/bin/flight hunter list --plain |awk '{print $5}' |grep '^node' |paste -s -d,)"
-                  /opt/flight/bin/flight profile apply $COMPUTE_NODES compute
+                  /opt/flight/bin/flight profile apply gateway1 login --wait
                   # Ensure write access to user NFS mounts for cluster users
                   chgrp cluster-users /opt/{apps,data}
                   chmod 775 /opt/{apps,data}
