@@ -231,7 +231,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
@@ -283,7 +282,6 @@ resources:
             write_files:
               - content: |
                   SERVER=$gateway-pri-ip
-                  PREFIX=node
                 path: /opt/flight/cloudinit.in
                 permissions: '0600'
                 owner: root:root
