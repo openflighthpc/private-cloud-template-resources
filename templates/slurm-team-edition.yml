@@ -183,6 +183,8 @@ resources:
                   # Ensure write access to user NFS mounts for cluster users
                   chgrp cluster-users /opt/{apps,data}
                   chmod 775 /opt/{apps,data}
+                  # Make Flight Silo use /opt/apps/
+                  pdsh -g all "sed -i 's,^software_dir:.*,software_dir: /opt/apps,g' /opt/flight/opt/silo/etc/config.yml"
                 path: /var/lib/firstrun/scripts/99-apply-identities.bash
                 permissions: '0600'
                 owner: root:root
